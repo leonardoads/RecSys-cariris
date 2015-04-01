@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #Para cada linha que representa uma click de uma SESSÃO em um ITEM, inserir o dado de clicks dados na mesma CATEGORIA do item em questão
 
 #INPUT
@@ -17,7 +16,6 @@
 #1,			7,		4,		2014,	10.9,	214536506,	0,	4
 #1,			7,		4,		2014,	10.95,	214577561,	0,	4
 
-import os
 
 #no caso de o arquivo estar dividido em partes
 #path - local do diretorio
