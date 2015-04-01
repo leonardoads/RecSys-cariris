@@ -34,6 +34,7 @@ def read_file_parts(path, pattern_filename, match_numeric, list_index):
 
 	return list_temp
 
+#já salva as linhas com a nova coluna
 def insert_and_save_clicks_same_category(session, lista_linhas, arq_w):
 	map_category_count = {}
 
@@ -82,8 +83,6 @@ arq_w = open(path + "clicks_proc_2.dat", "w")
 
 session_id_anterior = "0"
 lista_linhas_por_id = []
-
-updated_lines = []
 
 #apenas para poder registrar as linhas da ultima sessão
 linhas.append("0,0,0,0,0.0,0,0")
