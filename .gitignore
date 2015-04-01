@@ -15,3 +15,7 @@ vignettes/*.pdf
 *.tar.gz
 *.py~
 *.R~
+
+#dados muito grandes
+*.dat
+*.csv
