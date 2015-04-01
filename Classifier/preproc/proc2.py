@@ -19,6 +19,11 @@
 
 import os
 
+#no caso de o arquivo estar dividido em partes
+#path - local do diretorio
+#pattern_filename - padrao do nome das partes do arquivo
+#match_numeric - qual parte do padrao deve ser substituido pelo diferenciador da parte
+#list_index - lista de diferenciador das partes
 def read_file_parts(path, pattern_filename, match_numeric, list_index):
 	list_temp = []
 
@@ -74,11 +79,13 @@ arq_w = open(path + "clicks_proc_2.dat", "w")
 ## quando é necessário comparar elas. Se lembre que elas ##
 ## estão juntas no arquivo. TalesBoy :)                  ##
 ###########################################################
+
 session_id_anterior = "0"
 lista_linhas_por_id = []
 
 updated_lines = []
 
+#apenas para poder registrar as linhas da ultima sessão
 linhas.append("0,0,0,0,0.0,0,0")
 
 conta_linhas = 0
