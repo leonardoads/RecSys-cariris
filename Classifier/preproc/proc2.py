@@ -29,6 +29,7 @@ def read_file_parts(path, pattern_filename, match_numeric, list_index):
 		print "Reading file:", pattern_filename.replace(match_numeric, str(i))
 		arq = open(path + pattern_filename.replace(match_numeric, str(i)), "r")
 		list_temp = list_temp + arq.readlines()
+		arq.close()
 
 	return list_temp
 
@@ -79,7 +80,7 @@ arq_w = open(path + "clicks_proc_2.dat", "w")
 ## estão juntas no arquivo. TalesBoy :)                  ##
 ###########################################################
 
-session_id_anterior = "0"
+session_id_anterior = linhas[0].split(",")[0]
 lista_linhas_por_id = []
 
 #apenas para poder registrar as linhas da ultima sessão
@@ -123,3 +124,5 @@ for linha in linhas:
 ##########################################
 ## FIM DO TRECHO DESCRITO ANTERIORMENTE ##
 ##########################################
+
+arq_w.close()

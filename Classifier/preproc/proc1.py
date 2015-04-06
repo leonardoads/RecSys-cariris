@@ -10,7 +10,7 @@
 #1,			2014-04-07T10:54:46.998Z,	214536506,	0
 #1,			2014-04-07T10:57:00.306Z,	214577561,	0
 
-#OUTPUT - clicks_proc1.dat
+#OUTPUT - clicks_proc_basico.dat
 #SESSION, 	DAY, 	MONTH, 	YEAR, 	TIME, 	ITEM, 		CATEGORY
 #1,			7,		4,		2014,	10.85,	214536502,	0
 #1,			7,		4,		2014,	10.9,	214536500,	0
