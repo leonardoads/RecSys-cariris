@@ -79,10 +79,10 @@ def sort(array):
 
 #def aggregate_items_by_clicks:
 
-		
+import os
 
 #init
-path = "/home/tales/development/Git/RecSys-cariris/Data/"
+path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading BUYS data"
 linhas = read_single_file(path + "buys-proc-basico-teste.dat")
 print len(linhas), "lines loaded"
