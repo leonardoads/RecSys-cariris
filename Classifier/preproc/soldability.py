@@ -141,7 +141,7 @@ print "All item boughts processed"
 print
 #Daqui para frente faz o mesmo com CLICKS
 
-path = "/home/tales/development/Git/RecSys-cariris/Data/"
+path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading CLICKS data"
 linhas = read_single_file(path + "clicks_proc2-teste.dat")
 print len(linhas), "lines loaded"
