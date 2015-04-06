@@ -84,7 +84,7 @@ import os
 #init
 path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading BUYS data"
-linhas = read_single_file(path + "buys-proc-basico-teste.dat")
+linhas = read_single_file(path + "buys-proc-basico.dat")
 print len(linhas), "lines loaded"
 print
 
@@ -143,7 +143,7 @@ print
 
 path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading CLICKS data"
-linhas = read_single_file(path + "clicks_proc2-teste.dat")
+linhas = read_single_file(path + "clicks_proc2.dat")
 print len(linhas), "lines loaded"
 print
 
