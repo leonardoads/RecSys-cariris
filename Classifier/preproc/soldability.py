@@ -77,11 +77,21 @@ def sort(array):
     else:  # You need to hande the part at the end of the recursion - when you only have one element in your array, just return the array.
         return array
 
-#def aggregate_items_by_clicks:
+def count_buys(lista_linhas):
+    subtotal = 0
+    for linha in lista_linhas:
+        linha_split = linha.split(",")
+        subtotal = subtotal + int(linha_split[len(linha_split) - 1])
+    
+    return subtotal
 
 import os
+import sys
+
+sys.setrecursionlimit(1000000000)
 
 #init
+
 path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading BUYS data"
 linhas = read_single_file(path + "buys-proc-basico.dat")
@@ -119,7 +129,7 @@ for linha in linhas_sort:
 	item_id = linhaSplit[0]
 
 	if(item_id != item_id_anterior):
-		buy_item_occur[item_id_anterior] = len(linhas_do_mesmo_item)
+		buy_item_occur[item_id_anterior] = count_buys(linhas_do_mesmo_item)
 
 		#recomeça a juntar as linhas do mesmo item na lista
 		linhas_do_mesmo_item = []
@@ -132,7 +142,7 @@ for linha in linhas_sort:
 
 	#apenas para dar print no andamento do script
 	if (conta_linhas * 10 % len(linhas_sort) == 0):
-		print "Processing Buys ", str(((conta_linhas+0.0)/len(linhas_sort)) * 100) + "% done!"
+		print "Processing Clicks ", str(((conta_linhas+0.0)/len(linhas_sort)) * 100) + "% done!"
 
 	elif ((len(linhas)/100) == conta_linhas):
 		print "Processing Buys ", str(((conta_linhas+0.0)/len(linhas_sort)) * 100) + "% done!"	
