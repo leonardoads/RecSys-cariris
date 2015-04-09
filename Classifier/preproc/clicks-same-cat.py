@@ -78,7 +78,7 @@ path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) +
 print "Loading CLICKS data"
 linhas = read_file_parts(path, "clicks-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
 print len(linhas), "lines loaded"
-arq_w = open(path + "proc-2-clicks-same-cat.dat", "w")
+arq_w = open(path + "clicks-column-same-cat.dat", "w")
 
 
 ###########################################################
