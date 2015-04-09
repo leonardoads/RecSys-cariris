@@ -92,9 +92,9 @@ print "Clicks loaded"
 print len(click_lines), "lines loaded"
 print
 
-arq_w_c = open(path + "clicks-proc-3-clicked", "w")
-arq_w_b = open(path + "clicks-proc-3-bought", "w")
-arq_w_s	 = open(path + "clicks-proc-3-soldability", "w")
+arq_w_c = open(path + "clicks-column-clicked", "w")
+arq_w_b = open(path + "clicks-column-bought", "w")
+arq_w_s	 = open(path + "clicks-column-soldability", "w")
 
 #organizar a soldability em um dicionario
 print "Mapping item soldability"
