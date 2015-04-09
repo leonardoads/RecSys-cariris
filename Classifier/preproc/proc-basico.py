@@ -35,16 +35,18 @@ def split_timestamp(linha):
 	dia = linhaSplit[1][8:10]
 	hora = linhaSplit[1][11:13]
 	minuto = linhaSplit[1][14:16]
-	minuto_fraction = int(minuto) / 60.
-	return (linhaSplit[0] + "," + dia + "," + mes + "," + ano + "," + hora + "." + str(minuto_fraction)[2:] + "," + linhaSplit[2] + "," + linhaSplit[3])
+	minuto_fraction = str(int(minuto) / 60.).split(".")[1][0:2]
+	return (linhaSplit[0] + "," + dia + "," + mes + "," + ano + "," + hora + "." + minuto_fraction + "," + linhaSplit[2] + "," + linhaSplit[3])
 
 #init
-path = "/home/tales/development/Git/RecSys-cariris/Data/"
+import os
+
+path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading CLICKS data"
-linhas = read_file_parts(path, "yoochoose-clicks-3M-parteX.dat", "X", [1,2,3])
+linhas = read_file_parts(path, "yoochoose-clicks-parteX.dat", "X", [1,2,3,4,5,6])
 print len(linhas), "lines loaded"
 
-arq_w = open(path + "clicks_proc_basico.dat","w")
+arq_w = open(path + "clicks-proc-basico.dat","w")
 
 for linha in linhas:
 	arq_w.write(split_timestamp(linha))
