@@ -4,13 +4,14 @@
 #Para cada linha que representa uma click de uma SESSÃO em um ITEM, inserir o dado de clicks dados na mesma CATEGORIA do item em questão
 
 #INPUT
+#clicks_proc_basico.dat
 #SESSION, 	DAY, 	MONTH, 	YEAR, 	TIME, 	ITEM, 		CATEGORY
 #1,			7,		4,		2014,	10.85,	214536502,	0
 #1,			7,		4,		2014,	10.9,	214536500,	0
 #1,			7,		4,		2014,	10.9,	214536506,	0
 #1,			7,		4,		2014,	10.95,	214577561,	0
 
-#OUTPUT - clicks_proc2.dat
+#OUTPUT - clicks_proc2-clicks_same_cat.dat
 #CLICKS_SAME_CAT
 #4
 #4
@@ -75,9 +76,9 @@ import os
 #init
 path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading CLICKS data"
-linhas = read_file_parts(path, "clicks_parte_X_proc_basico.dat", "X", [1,2,3,4])
+linhas = read_file_parts(path, "clicks-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
 print len(linhas), "lines loaded"
-arq_w = open(path + "clicks_proc_2.dat", "w")
+arq_w = open(path + "proc-2-clicks-same-cat.dat", "w")
 
 
 ###########################################################
@@ -94,8 +95,9 @@ linhas.append("0,0,0,0,0.0,0,0")
 
 conta_linhas = 0
 percent_done = 0
-
+total = 0
 for linha in linhas:
+	total = total + 1
 	conta_linhas = conta_linhas + 1
 	
 	linhaSplit = linha.replace("\n","").split(",")
@@ -130,5 +132,7 @@ for linha in linhas:
 ##########################################
 ## FIM DO TRECHO DESCRITO ANTERIORMENTE ##
 ##########################################
+
+print total - 1, "lines saved"
 
 arq_w.close()
