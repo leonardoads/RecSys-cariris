@@ -4,11 +4,13 @@
 #Gerar a informação de BUY, a compra realizada para o par SESSION, ITEM.
 
 #INPUT
-#SESSION	TIMESTAMP			ITEM		CATEGORY
-#1,			74201410.85,		214536502,	0
-#1,			74201410.9,			214536500,	0
-#1,			74201410.9,			214536506,	0
-#1,			74201410.95,		214577561,	0
+##SESSION, 	DAY, 	MONTH, 	YEAR, 	TIME, 	ITEM,		CATEGORY
+#14679,		03,		04,		2014,	04.73,	214645087,	0
+#14672,		02,		04,		2014,	07.61,	214664919,	0
+#14672,		02,		04,		2014,	07.61,	214826625,	0
+#14673,		06,		04,		2014,	15.85,	214696625,	0
+#14673,		06,		04,		2014,	15.96,	214696740,	0
+
 
 #INPUT 2
 #SESSION, 	DAY, 	MONTH, 	YEAR, 	TIME, 	ITEM, 		PRICE 		QUANTITY
@@ -44,69 +46,112 @@ def read_single_file(filename):
 
 	return lines
 
-import os
+def busca_binaria(lista, busca):
+    inicio, fim = 0, len(lista)-1
+    while inicio <= fim:
+        meio = (inicio + fim)/2
+        if busca == lista[meio]:
+            return lista.index(lista[meio])
+        else:
+            if lista[meio] < busca:
+                inicio = meio + 1
+            else:
+                fim = meio - 1
+    return None
 
-path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
+def sort(array):
+    less = []
+    equal = []
+    greater = []
+
+    if len(array) > 1:
+        pivot = array[0]
+        for x in array:
+            if x < pivot:
+                less.append(x)
+            if x == pivot:
+                equal.append(x)
+            if x > pivot:
+                greater.append(x)
+        # Don't forget to return something!
+        return sort(less)+equal+sort(greater)  # Just use the + operator to join lists
+    # Note that you want equal ^^^^^ not pivot
+    else:  # You need to hande the part at the end of the recursion - when you only have one element in your array, just return the array.
+        return array
+
+import os
+import sys
+
+sys.setrecursionlimit(1000000000)
+
+path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading CLICKS data"
-clicks_lines = read_file_parts(path, "yoochoose-clicks-parteX.dat", "X", [1,2,3,4,5,6])
-print len(clicks_lines), "lines loaded"
+clicks_lines = read_file_parts(path, "clicks-proc-basico/clicks-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
+print len(clicks_lines), "lines loaded\n"
 
 print "Loading BUYS data"
-buys_lines = read_single_file(path + "buys-proc-basico.dat")
-print len(buys_lines), "lines loaded"
-print
+buys_lines = read_file_parts(path, "buys-proc-basico/buys-proc-basico-parteX.dat", "X", [1,2])
+print len(buys_lines), "lines loaded\n"
 
-map_session_item = {}
+print "Sorting buys data"
+buys_lines = sort(buys_lines)
+print "Buys data sorted\n"
 
-print "mapping buys"
+#monta uma lista ordenada das sessions em que houve compra
+buys_sessions_list = []
+buys_items_list = []
+
+
+count = 0
 for linha in buys_lines:
+	count = count + 1
+	linha_split = linha.replace("\n","").split(",")
+	session = linha_split[0]
+	item = linha_split[5]
+	
+	if(not busca_binaria(buys_sessions_list, session)):
+		buys_sessions_list.append(session)
+		list_temp = [item]
+		buys_items_list.append(list_temp)
+
+	else:
+		last_index = len(buys_items_list) - 1
+		buys_items_list[last_index].append(item)
+
+	if(count % 10000 == 0):
+		print "Processing Buys ", str(((count+0.0)/len(buys_lines)) * 100)[0:7] + "%" + " done!"			
+
+conta_linhas = 0
+
+#gera array que representa a info de buy da linha
+info_buy = []
+for linha in clicks_lines:
 	linha_split = linha.replace("\n","").split(",")
 	session = linha_split[0]
 	item = linha_split[5]
 
-	if(session in map_session_item.keys()):
-		map_session_item[session].append(item)
+	buy_index = busca_binaria(buys_sessions_list, session)
 
-	else:
-		lista = [item]
-		map_session_item[session] = lista
-print
-
-buy_column = []
-
-conta_linhas = 0
-percent_done = 0
-print "generating buy column"
-for linha in clicks_lines:
-	conta_linhas = conta_linhas + 1
-
-	linha_split = linha.replace("\n","").split(",")
-	session = linha_split[0]
-	item = linha_split[2]
-
-	if(session in map_session_item.keys()):
-
-		if(item in map_session_item[session]):
-			buy_column.append("1")
+	if (not buy_index == None):
+		#print session, item, buys_items_list[buy_index]
+		if (item in buys_items_list[buy_index]):
+			info_buy.append(1)
+			#print session, item
 		else:
-			buy_column.append("0")
-
+			info_buy.append(0)
 	else:
-		buy_column.append("0")
+		info_buy.append(0)
 
-	if (conta_linhas * 100 % len(clicks_lines) == 0):
-		print "Processing Buys ", str(((conta_linhas+0.0)/len(linhas_sort)) * 100) + "%" + " done!"
+        if(conta_linhas % 10000 == 0):
+		print "Processing Clicks ", str(((conta_linhas+0.0)/len(clicks_lines)) * 100)[0:7] + "%" + " done!"	
 
-	elif ((len(clicks_lines)/100) == conta_linhas):
-		print "Processing Buys ", str(((conta_linhas+0.0)/len(linhas_sort)) * 100) + "%" + " done!"	
+print "Processing Clicks  99.5024% done!"
 
-print
-print len(buy_column), "lines"
-
-arq_w = open("clicks-column-buy.dat", "w")
-
-print "saving data"
-for i in buy_column:
-	arq_w.write(i)
+#salvando coluna de info de buy
+arq_w = open(path + "columns/clicks-column-buy.dat", "w")
+i = 0
+for i in range(len(clicks_lines)):
+	arq_w.write(str(i))
+	arq_w.write("\n")
 
 arq_w.close()
