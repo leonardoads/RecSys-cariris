@@ -47,7 +47,7 @@ linhas = read_file_parts(path, "yoochoose-clicks-parteX.dat", "X", [1,2,3,4,5,6]
 print len(linhas), "lines loaded"
 
 path_list = path.split("/")[0:-2]
-path_list.append("buys-proc-basico")
+path_list.append("clicks-proc-basico")
 
 path = "/".join(path_list)
 path = path + "/"
