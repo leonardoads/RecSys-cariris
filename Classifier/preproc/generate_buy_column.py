@@ -126,6 +126,7 @@ conta_linhas = 0
 #gera array que representa a info de buy da linha
 info_buy = []
 for linha in clicks_lines:
+	conta_linhas = conta_linhas + 1
 	linha_split = linha.replace("\n","").split(",")
 	session = linha_split[0]
 	item = linha_split[5]
@@ -142,10 +143,10 @@ for linha in clicks_lines:
 	else:
 		info_buy.append(0)
 
-        if(conta_linhas % 10000 == 0):
+        if(conta_linhas % 100000 == 0):
 		print "Processing Clicks ", str(((conta_linhas+0.0)/len(clicks_lines)) * 100)[0:7] + "%" + " done!"	
 
-print "Processing Clicks  99.5024% done!"
+print "Processing Clicks  100% done!"
 
 #salvando coluna de info de buy
 arq_w = open(path + "columns/clicks-column-buy.dat", "w")

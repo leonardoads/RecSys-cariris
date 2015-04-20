@@ -82,19 +82,19 @@ import os
 path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 
 print "Loading SOLDABILITY data"
-soldability_lines = read_single_file(path + "soldability.dat")
+soldability_lines = read_single_file(path + "clicks-soldability.dat")
 print "Soldability loaded"
 print
 
 print "Loading CLICKS data"
-click_lines = read_file_parts(path, "clicks-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
+click_lines = read_file_parts(path, "clisck-proc-basico/clicks-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
 print "Clicks loaded"
 print len(click_lines), "lines loaded"
 print
 
-arq_w_c = open(path + "clicks-column-clicked.dat", "w")
-arq_w_b = open(path + "clicks-column-bought.dat", "w")
-arq_w_s	 = open(path + "clicks-column-soldability.dat", "w")
+arq_w_c = open(path + "columns/clicks-column-clicked.dat", "w")
+arq_w_b = open(path + "columns/clicks-column-bought.dat", "w")
+arq_w_s	 = open(path + "columns/clicks-column-soldability.dat", "w")
 
 #organizar a soldability em um dicionario
 print "Mapping item soldability"

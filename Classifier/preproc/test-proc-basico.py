@@ -47,12 +47,12 @@ linhas = read_file_parts(path, "yoochoose-clicks-parteX.dat", "X", [1,2,3,4,5,6]
 print len(linhas), "lines loaded"
 
 path_list = path.split("/")[0:-2]
-path_list.append("clicks-proc-basico")
+path_list.append("test-proc-basico")
 
 path = "/".join(path_list)
 path = path + "/"
 
-arq_w = open(path + "clicks-proc-basico.dat","w")
+arq_w = open(path + "test-proc-basico.dat","w")
 
 for linha in linhas:
 	arq_w.write(split_timestamp(linha))

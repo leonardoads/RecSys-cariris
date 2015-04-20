@@ -52,7 +52,7 @@ path_list.append("clicks-proc-basico")
 path = "/".join(path_list)
 path = path + "/"
 
-arq_w = open(path + "clicks-proc-basico.dat","w")
+arq_w = open(path + "clicks-proc-basico/clicks-proc-basico.dat","w")
 
 for linha in linhas:
 	arq_w.write(split_timestamp(linha))
