@@ -1,4 +1,4 @@
-p#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 #Gerar uma tabela substituindo a coluna TIMESTAMP por DAY, MOTH, YEAR , TIME
@@ -41,14 +41,23 @@ def split_timestamp(linha):
 #init
 import os
 
-path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
+path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/original_data/"
 print "Loading CLICKS data"
-linhas = read_file_parts(path, "yoochoose-buys-parteX.dat", "X", [1,2,3,4,5,6])
+linhas = read_file_parts(path, "yoochoose-buys-parteX.dat", "X", [1,2])
 print len(linhas), "lines loaded"
+
+path_list = path.split("/")[0:-2]
+path_list.append("buys-proc-basico")
+
+path = "/".join(path_list)
+path = path + "/"
 
 arq_w = open(path + "buys-proc-basico.dat","w")
 
 for linha in linhas:
 	arq_w.write(split_timestamp(linha))
+
+print "done!"
+print "buys-proc-basico.dat saved at", path 
 
 arq_w.close()

@@ -41,10 +41,16 @@ def split_timestamp(linha):
 #init
 import os
 
-path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
+path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/original_data/"
 print "Loading CLICKS data"
 linhas = read_file_parts(path, "yoochoose-clicks-parteX.dat", "X", [1,2,3,4,5,6])
 print len(linhas), "lines loaded"
+
+path_list = path.split("/")[0:-2]
+path_list.append("buys-proc-basico")
+
+path = "/".join(path_list)
+path = path + "/"
 
 arq_w = open(path + "clicks-proc-basico.dat","w")
 
