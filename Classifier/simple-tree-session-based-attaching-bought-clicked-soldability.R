@@ -73,11 +73,11 @@ gc()
 
 #data_train$CATEGORY <- as.factor(data_train$CATEGORY)
 
-model <- C5.0(data_train[-9], as.factor(data_train$IS_BUY))
+model <- C5.0(data_train[-10], as.factor(data_train$IS_BUY))
 model
 summary(model)
 
-pred = predict(model, data_train[-9])
+pred = predict(model, data_train[-10])
 
 CrossTable(data_train$IS_BUY, pred, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))
 
