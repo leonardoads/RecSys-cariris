@@ -101,6 +101,7 @@ print "Buys data sorted\n"
 buys_sessions_list = []
 buys_items_list = []
 
+arq_logs = open(path + "logs/log_buy_column.txt", "w")
 
 count = 0
 for linha in buys_lines:
@@ -118,8 +119,9 @@ for linha in buys_lines:
 		last_index = len(buys_items_list) - 1
 		buys_items_list[last_index].append(item)
 
-	if(count % 10000 == 0):
-		print "Processing Buys ", str(((count+0.0)/len(buys_lines)) * 100)[0:7] + "%" + " done!"			
+	if(count % 100000 == 0):
+		print "Processing Buys ", str(((count+0.0)/len(buys_lines)) * 100)[0:7] + "%" + " done!"
+		arq_logs.write("Processing Buys " + str(((count+0.0)/len(buys_lines)) * 100)[0:7] + "%" + " done!\n")		
 
 conta_linhas = 0
 
@@ -143,15 +145,16 @@ for linha in clicks_lines:
 	else:
 		info_buy.append(0)
 
-        if(conta_linhas % 100000 == 0):
+        if(conta_linhas % 5000000 == 0):
 		print "Processing Clicks ", str(((conta_linhas+0.0)/len(clicks_lines)) * 100)[0:7] + "%" + " done!"	
+		arq_logs.write("Processing Clicks " + str(((conta_linhas+0.0)/len(clicks_lines)) * 100)[0:7] + "%" + " done!\n")
 
 print "Processing Clicks  100% done!"
 
 #salvando coluna de info de buy
 arq_w = open(path + "columns/clicks-column-buy.dat", "w")
 i = 0
-for i in range(len(clicks_lines)):
+for i in info_buy:
 	arq_w.write(str(i))
 	arq_w.write("\n")
 
