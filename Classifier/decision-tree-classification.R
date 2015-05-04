@@ -132,5 +132,5 @@ colnames(test) <- c("SESSION", "ITEM", "PRED")
 test = test[test$PRED == 1,]
 
 
-write.table(test, "/home/ubuntu/dev/RecSys-cariris/Classifier/predicts/forest5-ss-da-mo-ti-it-cl-bo-sc.dat", sep=",", row.names=F, col.names=F)
+write.table(test, "/home/ubuntu/dev/RecSys-cariris/Classifier/predicts/forest5-ss-da-mo-ti-it-cl-bo-sc.dat", sep=",", row.names=F, col.names=F, quote=F)
 
