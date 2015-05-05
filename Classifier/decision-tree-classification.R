@@ -1,4 +1,4 @@
-	###### get arguments from command line #####
+###### get arguments from command line #####
 options(echo=TRUE) # if you want see commands in output file
 args <- commandArgs(trailingOnly = TRUE)
 
@@ -21,7 +21,12 @@ path = args[4]
 
 #TRAIN PARTITION
 train_partition_percent = as.integer(args[5])
+
+#TEST SIMULATION OR REAL TEST
+simulation = args[6]
+
 ############################################
+
 
 library("gmodels")
 library("C50")
@@ -178,9 +183,18 @@ train_partition_size = (train_partition_percent / 100) * n.data
 
 print(train_partition_size)
 
-data.train = data.balanced[0:train_partition_size,]
-data.test = data.balanced[train_partition_size + 1 : n.data,]
+if(train_partition_size == 100){
+        data.train = data.balanced
+        data.test = data.balanced
+
+}else{
+        data.train = data.balanced[0:train_partition_size,]
+        data.test = data.balanced[train_partition_size + 1 : n.data,]
+
+}
+
 ################################
+
 
 error_cost <- matrix(c(aa, ab, ba, bb), nrow = 2)
 is_buy_index = length(data.train) * -1
