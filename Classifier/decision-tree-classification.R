@@ -1,5 +1,5 @@
 ###### get arguments from command line #####
-#options(echo=TRUE) # if you want see commands in output file
+options(echo=TRUE) # if you want see commands in output file
 args <- commandArgs(trailingOnly = TRUE)
 
 #NMBER OF TREES FOR TRIALS
@@ -33,7 +33,7 @@ train_partition_percent = as.integer(args[5])
 simulation = args[6]
 
 #EXAMPLE OF A TERMINAL COMMAND LINE CALLING
-#Rscript decision-tree-classification.R 1 1133 ss-da-mo-ti-sd-sc /local/dev/RecSys-cariris/ 70 TRUE
+#Rscript decision-tree-classification.R 1 1133 ss-da-mo-ti-it-sd-sc /local/dev/RecSys-cariris/ 100 TRUE
 ############################################
 
 library("gmodels")
@@ -42,12 +42,12 @@ library("C50")
 clicks_source_path = paste(path, "/Data/clicks-proc-basico/", sep = "")
 
 print("Loading data")
-data = read.csv(paste(clicks_source_path, "clicks-proc-basico-parte6.dat", sep = ""), sep = ",", header = F)
-#data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte2.dat", sep = ""), sep = ",", header = F))
-#data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte3.dat", sep = ""), sep = ",", header = F))
-#data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte4.dat", sep = ""), sep = ",", header = F))
-#data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte5.dat", sep = ""), sep = ",", header = F))
-#data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte6.dat", sep = ""), sep = ",", header = F))
+data = read.csv(paste(clicks_source_path, "clicks-proc-basico-parte1.dat", sep = ""), sep = ",", header = F)
+data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte2.dat", sep = ""), sep = ",", header = F))
+data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte3.dat", sep = ""), sep = ",", header = F))
+data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte4.dat", sep = ""), sep = ",", header = F))
+data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte5.dat", sep = ""), sep = ",", header = F))
+data = rbind(data, read.csv(paste(clicks_source_path, "clicks-proc-basico-parte6.dat", sep = ""), sep = ",", header = F))
 
 print(paste(nrow(data), "lines loaded"))
 print("\n")
@@ -212,6 +212,11 @@ if(train_partition_percent == 100){
 error_cost <- matrix(c(aa, ab, ba, bb), nrow = 2)
 is_buy_index = length(data.train) * -1
 
+sapply(data.train, class)
+head(data.train)
+
+print(paste("Column index to be used as classifier >", (is_buy_index * (-1)), "<"))
+
 model <- C5.0(data.train[is_buy_index], as.factor(data.train$IS_BUY), trials = n_trees, costs = error_cost)
 model
 #summary(model)
@@ -273,22 +278,27 @@ if(simulation == "TRUE"){
 
 	if(!is.element("da", columns_array)){
 	  test$DAY = NULL
+	  column_names = column_names[column_names != "DAY"]
 	}
 
 	if(!is.element("mo", columns_array)){
 	  test$MONTH = NULL
+	  column_names = column_names[column_names != "MONTH"]
 	}
 
 	if(!is.element("yr", columns_array)){
 	  test$YEAR = NULL
+	  column_names = column_names[column_names != "YEAR"]
 	}
 
 	if(!is.element("ti", columns_array)){
 	  test$TIME = NULL
+	  column_names = column_names[column_names != "TIME"]
 	}
 
 	if(!is.element("ca", columns_array)){
 	  test$CATEGORY = NULL
+	  column_names = column_names[column_names != "CATEGORY"]
 	}
 	###################################################
 	gc()
@@ -327,10 +337,17 @@ if(simulation == "TRUE"){
 	###################################################
 	print("Aditional columns loaded")
 	print("\n")
+	
+	sapply(test, class)
+	head(test)
 
 	gc()
 
+	sapply(test, class)
+	head(test)
+
 	print("Running prediction")
+	head(test)
 	prediction <- predict(model, test)
 	print("Prediction done!")
 	print("\n")
