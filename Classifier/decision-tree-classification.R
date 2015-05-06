@@ -110,35 +110,35 @@ gc()
 if(is.element("wk", columns_array)){
   column_names[i] <- "WEEKDAY"
   i = i + 1
-  data = data.frame(data, WEEKDAY = read.csv(paste(path, "Data/columns/clicks-column-weekday.dat", sep = ""), sep = ",", header = F)[0:nrow(data),])
+  data = data.frame(data, WEEKDAY = read.csv(paste(path, "Data/columns/clicks-column-weekday.dat", sep = ""), sep = ",", header = F))
 }
 
 if(is.element("cl", columns_array)){
   column_names[i] <- "CLICKED"
   i = i + 1
-  data = data.frame(data, CLICKED = read.csv(paste(path, "Data/columns/clicks-column-clicked.dat", sep = ""), sep = ",", header = F)[0:nrow(data),])
+  data = data.frame(data, CLICKED = read.csv(paste(path, "Data/columns/clicks-column-clicked.dat", sep = ""), sep = ",", header = F))
 }
 
 if(is.element("bo", columns_array)){
   column_names[i] <- "BOUGHT"
   i = i + 1
-  data = data.frame(data, BOUGHT = read.csv(paste(path, "Data/columns/clicks-column-bought.dat", sep = ""), sep = ",", header = F)[0:nrow(data),])
+  data = data.frame(data, BOUGHT = read.csv(paste(path, "Data/columns/clicks-column-bought.dat", sep = ""), sep = ",", header = F))
 }
 
 if(is.element("sd", columns_array)){
   column_names[i] <- "SOLDABILITY"
   i = i + 1
-  data = data.frame(data, SOLDABILITY = read.csv(paste(path, "Data/columns/clicks-column-soldability.dat", sep = ""), sep = ",", header = F)[0:nrow(data),])
+  data = data.frame(data, SOLDABILITY = read.csv(paste(path, "Data/columns/clicks-column-soldability.dat", sep = ""), sep = ",", header = F))
 }
 
 if(is.element("sc", columns_array)){
   column_names[i] <- "SAME_CAT"
   i = i + 1
-  data = data.frame(data, SAME_CAT = read.csv(paste(path, "Data/columns/clicks-column-same-cat.dat", sep = ""), sep = ",", header = F)[0:nrow(data),])
+  data = data.frame(data, SAME_CAT = read.csv(paste(path, "Data/columns/clicks-column-same-cat.dat", sep = ""), sep = ",", header = F))
 }
 
 column_names[i] <- "IS_BUY"
-data = data.frame(data, IS_BUY = read.csv(paste(path, "Data/columns/clicks-column-buy.dat", sep = ""), sep = ",", header = F)[0:nrow(data),])
+data = data.frame(data, IS_BUY = read.csv(paste(path, "Data/columns/clicks-column-buy.dat", sep = ""), sep = ",", header = F))
 ###################################################
 
 
