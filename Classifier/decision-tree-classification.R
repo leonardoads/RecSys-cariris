@@ -340,7 +340,10 @@ if(simulation == "TRUE"){
 	
 	sapply(test, class)
 	head(test)
-
+	
+	column_names <- column_names[!is.na(column_names)]
+	colnames(test) = column_names
+	
 	gc()
 
 	sapply(test, class)
