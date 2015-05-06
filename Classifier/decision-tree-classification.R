@@ -1,4 +1,4 @@
-###### get arguments from command line #####
+	###### get arguments from command line #####
 options(echo=TRUE) # if you want see commands in output file
 args <- commandArgs(trailingOnly = TRUE)
 
@@ -6,7 +6,7 @@ args <- commandArgs(trailingOnly = TRUE)
 n_trees = as.integer(args[1])
 
 #MATRIX COSTS
-#EXAMPLE 1234 MEANS: FISRT COLUMN 1,2 AND SECOND COLUMNS 3,4
+#EXAMPLE 1234 MEANS: FISRT COLUMN 1,2 AND SECOND COLUMN 3,4
 costs = args[2]
 aa = as.integer(substring(costs, 1, 1))
 ab = as.integer(substring(costs, 2, 2))
@@ -76,35 +76,40 @@ colnames(data) = column_names
 
 
 ##### REMOVE NOT ASKED COLUMNS FROM BASIC DATA #####
-if(!is.element("ss", columns_array)){
-  data$SESSION = NULL
-}
 
 if(!is.element("da", columns_array)){
   data$DAY = NULL
+  column_names = column_names[column_names != "DAY"]
 }
 
 if(!is.element("mo", columns_array)){
   data$MONTH = NULL
+  column_names = column_names[column_names != "MONTH"]
 }
 
 if(!is.element("yr", columns_array)){
   data$YEAR = NULL
+  column_names = column_names[column_names != "YEAR"]
 }
 
 if(!is.element("ti", columns_array)){
   data$TIME = NULL
+  column_names = column_names[column_names != "TIME"]
 }
 
 if(!is.element("it", columns_array)){
   data$ITEM = NULL
+  column_names = column_names[column_names != "ITEM"]
 }
 
 if(!is.element("ca", columns_array)){
   data$CATEGORY = NULL
+  column_names = column_names[column_names != "CATEGORY"]
 }
 ###################################################
 gc()
+
+head(data)
 
 ######## ADDING NEW COLUMNS TO BASIC DATA #########
 if(is.element("wk", columns_array)){
@@ -140,7 +145,9 @@ if(is.element("sc", columns_array)){
 column_names[i] <- "IS_BUY"
 data = data.frame(data, IS_BUY = read.csv(paste(path, "Data/columns/clicks-column-buy.dat", sep = ""), sep = ",", header = F))
 ###################################################
-
+print(column_names)
+print(column_names[!is.na(column_names)])
+colnames(data) = column_names[!is.na(column_names)]
 
 data.buys = data[data$IS_BUY == 1,]
 buy.sessions = data.buys$SESSION
@@ -179,6 +186,12 @@ data.no.buys = NULL
 buy.sessions = NULL
 no.buy.sessions = NULL
 no.buy.subset.sessions = NULL
+
+# THE COLUMNS SESSION ONLY CAN BE NULLED AFTER BEING USED TO SET DATA.BUYS AND DATA.NO.BUYS
+if(!is.element("ss", columns_array)){
+  data$SESSION = NULL
+  column_names = column_names[column_names != "SESSION"]
+}
 gc()
 
 ### TRAIN AND TEST PARTITIONS ##
@@ -204,6 +217,7 @@ if(train_partition_percent == 100){
 	data.test = data.balanced[train_partition_size + 1 : n.data,]
 	print(paste("Model will be trained with", train_partition_size, "% of balanced data.set"))
 	print(paste("Tests will be", 100 - train_partition_size, "% of balanced data.set"))
+	print(paste("It means", nrow(data.test), "lines of data"))
 	print("\n")
 }
 
@@ -340,12 +354,12 @@ if(simulation == "TRUE"){
 	
 	sapply(test, class)
 	head(test)
-	
+
 	column_names <- column_names[!is.na(column_names)]
 	colnames(test) = column_names
-	
-	gc()
 
+	gc()
+	print(column_names)
 	sapply(test, class)
 	head(test)
 
