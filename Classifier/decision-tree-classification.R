@@ -6,7 +6,7 @@ args <- commandArgs(trailingOnly = TRUE)
 n_trees = as.integer(args[1])
 
 #MATRIX COSTS
-#EXAMPLE 1234 MEANS: FISRT ROW 1,2 AND SECOND ROW 3,4
+#EXAMPLE 1234 MEANS: FISRT COLUMN 1,2 AND SECOND COLUMNS 3,4
 costs = args[2]
 aa = as.integer(substring(costs, 1, 1))
 ab = as.integer(substring(costs, 2, 2))
