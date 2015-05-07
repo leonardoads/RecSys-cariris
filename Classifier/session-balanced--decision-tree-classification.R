@@ -254,7 +254,7 @@ data.balanced = NULL
 prediction.data.test = NULL
 gc()
 
-if(simulation == "TRUE"){
+if(simulation == "TRUE" & train_partition_percent == 100){
 	print("Trained model will be used to predict real test")
 	print("\n")
 	print("Loading test data")
