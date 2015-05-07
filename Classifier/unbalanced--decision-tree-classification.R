@@ -171,13 +171,13 @@ data.no.buys = data[is.element(data$SESSION, no.buy.sessions),]
 
 #60500 sessoes escolhidas
 #levando em consideração a proporção original e as configurações da maquina
-select.buy.sessions = 60500
+select.buy.sessions = 78650
 set.seed(234); buy.sessions.selected = sample(buy.sessions)[0:select.buy.sessions]
 data.buys.selected = data.buys[is.element(data.buys$SESSION, buy.sessions.selected),]
 
 #1039500 sessoes escolhidas
 #levando em consideração a proporção original e as configurações da maquina
-select.no.buy.sessions = 1039500
+select.no.buy.sessions = 1351350
 set.seed(234); no.buy.sessions.selected = sample(no.buy.sessions)[0:select.no.buy.sessions]
 data.no.buys.selected = data.no.buys[is.element(data.no.buys$SESSION, no.buy.sessions.selected),]
 
