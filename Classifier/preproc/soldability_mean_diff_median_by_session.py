@@ -166,7 +166,7 @@ import os
 #init
 path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading CLICKS data"
-linhas = read_file_parts(path, "clicks_same_cat/clicks-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
+linhas = read_file_parts(path, "clicks-proc-basico/clicks-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
 print len(linhas), "lines loaded"
 
 print "Loading SOLDABILITY column data"
