@@ -79,7 +79,10 @@ def calculate_and_store_soldability_median(session, lista_linhas, arq_w_sold_med
 		soldabilities.append(soldability)
 
 	soldability_median = list_median(soldabilities)
-	string_soldability_median = str(soldability_median).split(".")[0] + "." + str(soldability_median).split(".")[1][0:2]
+	if("." in str(soldability_median)):
+		string_soldability_median = str(soldability_median).split(".")[0] + "." + str(soldability_median).split(".")[1][0:2]
+	else:
+		string_soldability_median = str(soldability_median)
 
 	for s in range(len(soldabilities)):
 		arq_w_sold_median.write(string_soldability_median + "\n")
@@ -156,26 +159,30 @@ def c_bind(colunas1, colunas2):
 
 	index = 0
 	for a in range(len(colunas1)):
-		new_lines.append(colunas1[index] + "," + colunas2[index])
+		new_lines.append(colunas1[index].replace("\n","") + "," + colunas2[index].replace("\n",""))
 		index = index + 1
 
 	return new_lines
 
 import os
+import sys
+
+#to clicks or test?
+apply_to = sys.argv[1]
 
 #init
 path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading CLICKS data"
-linhas = read_file_parts(path, "clicks-proc-basico/clicks-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
+linhas = read_file_parts(path, apply_to + "-proc-basico/" + apply_to + "-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
 print len(linhas), "lines loaded"
 
 print "Loading SOLDABILITY column data"
-linhas_soldability = read_single_file(path + "clicks-column-soldability.dat")
+linhas_soldability = read_single_file(path + "columns/" + apply_to + "-column-soldability.dat")
 print len(linhas_soldability), "lines loaded"
 
-arq_w_sold_mean = open(path + "columns/clicks-soldability_mean_by_session.dat", "w")
-arq_w_sold_median = open(path + "columns/clicks-soldability_median_by_session.dat", "w")
-arq_w_sold_mean_diff = open(path + "columns/clicks-soldability_mean_diff_by_session.dat", "w")
+arq_w_sold_mean = open(path + "columns/" + apply_to + "-soldability_mean_by_session.dat", "w")
+arq_w_sold_median = open(path + "columns/" + apply_to + "-soldability_median_by_session.dat", "w")
+arq_w_sold_mean_diff = open(path + "columns/" + apply_to + "-soldability_mean_diff_by_session.dat", "w")
 
 linhas = c_bind(linhas, linhas_soldability)
 
