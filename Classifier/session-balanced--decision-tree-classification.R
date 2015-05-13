@@ -242,7 +242,7 @@ prediction.data.test <- predict(model, data.test)
 
 CrossTable(data.test$IS_BUY, prediction.data.test, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))
 
-output_filename = paste("report", "-train-", as.character(train_partition_percent), "-", as.character(100 - train_partition_percent), "-", "forest", n_trees, "-", "costs", costs, "-", columns, sep = "")
+output_filename = paste("session-based", "report", "-train-", as.character(train_partition_percent), "-", as.character(100 - train_partition_percent), "-", "forest", n_trees, "-", "costs", costs, "-", columns, sep = "")
 complete_path = paste(path, "/Classifier/reports/", output_filename, ".dat", sep = "")
 print(paste("Report saved as ", complete_path))
 print("\n")
@@ -375,7 +375,7 @@ if(simulation == "TRUE" & train_partition_percent == 100){
 
 	test = test[test$PRED == 1,]
 
-	output_filename = paste("forest", n_trees, "-", "costs", costs, "-", columns, sep = "")
+	output_filename = paste("session-based", "forest", n_trees, "-", "costs", costs, "-", columns, sep = "")
 	complete_path = paste(path, "/Classifier/predicts/", output_filename, ".dat", sep = "")
 
 	print (paste("Saving predictions as ", complete_path))
