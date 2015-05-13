@@ -10,7 +10,7 @@
 #1,			2014-04-07T10:54:46.998Z,	214536506,	0
 #1,			2014-04-07T10:57:00.306Z,	214577561,	0
 
-#OUTPUT - clicks_proc1.dat
+#OUTPUT - clicks_proc_basico.dat
 #SESSION, 	DAY, 	MONTH, 	YEAR, 	TIME, 	ITEM, 		CATEGORY
 #1,			7,		4,		2014,	10.85,	214536502,	0
 #1,			7,		4,		2014,	10.9,	214536500,	0
@@ -35,16 +35,24 @@ def split_timestamp(linha):
 	dia = linhaSplit[1][8:10]
 	hora = linhaSplit[1][11:13]
 	minuto = linhaSplit[1][14:16]
-	minuto_fraction = int(minuto) / 60.
-	return (linhaSplit[0] + "," + dia + "," + mes + "," + ano + "," + hora + "." + str(minuto_fraction)[2:] + "," + linhaSplit[2] + "," + linhaSplit[3])
+	minuto_fraction = str(int(minuto) / 60.).split(".")[1][0:2]
+	return (linhaSplit[0] + "," + dia + "," + mes + "," + ano + "," + hora + "." + minuto_fraction + "," + linhaSplit[2] + "," + linhaSplit[3])
 
 #init
-path = "/home/tales/development/Git/RecSys-cariris/Data/"
+import os
+
+path = path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/original_data/"
 print "Loading CLICKS data"
-linhas = read_file_parts(path, "yoochoose-clicks-3M-parteX.dat", "X", [1,2,3])
+linhas = read_file_parts(path, "yoochoose-clicks-parteX.dat", "X", [1,2,3,4,5,6])
 print len(linhas), "lines loaded"
 
-arq_w = open(path + "clicks_proc_basico.dat","w")
+path_list = path.split("/")[0:-2]
+path_list.append("clicks-proc-basico")
+
+path = "/".join(path_list)
+path = path + "/"
+
+arq_w = open(path + "clicks-proc-basico/clicks-proc-basico.dat","w")
 
 for linha in linhas:
 	arq_w.write(split_timestamp(linha))

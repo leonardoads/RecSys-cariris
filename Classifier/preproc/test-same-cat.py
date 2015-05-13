@@ -4,17 +4,19 @@
 #Para cada linha que representa uma click de uma SESSÃO em um ITEM, inserir o dado de clicks dados na mesma CATEGORIA do item em questão
 
 #INPUT
+#clicks_proc_basico.dat
 #SESSION, 	DAY, 	MONTH, 	YEAR, 	TIME, 	ITEM, 		CATEGORY
 #1,			7,		4,		2014,	10.85,	214536502,	0
 #1,			7,		4,		2014,	10.9,	214536500,	0
 #1,			7,		4,		2014,	10.9,	214536506,	0
 #1,			7,		4,		2014,	10.95,	214577561,	0
 
-#OUTPUT - clicks_proc2.dat
-#1,			7,		4,		2014,	10.85,	214536502,	0,	4
-#1,			7,		4,		2014,	10.9,	214536500,	0,	4
-#1,			7,		4,		2014,	10.9,	214536506,	0,	4
-#1,			7,		4,		2014,	10.95,	214577561,	0,	4
+#OUTPUT - clicks_proc2-clicks_same_cat.dat
+#CLICKS_SAME_CAT
+#4
+#4
+#4
+#4
 
 
 #no caso de o arquivo estar dividido em partes
@@ -29,6 +31,7 @@ def read_file_parts(path, pattern_filename, match_numeric, list_index):
 		print "Reading file:", pattern_filename.replace(match_numeric, str(i))
 		arq = open(path + pattern_filename.replace(match_numeric, str(i)), "r")
 		list_temp = list_temp + arq.readlines()
+		arq.close()
 
 	return list_temp
 
@@ -53,7 +56,11 @@ def insert_and_save_clicks_same_category(session, lista_linhas, arq_w):
 		
 		new_line.append(map_category_count[categ])
 
-		arq_w.write(join(",", new_line) + "\n")
+		#arq_w.write(join(",", new_line) + "\n")
+		save_column(arq_w, new_line)
+
+def save_column(arq_w, list_columns):
+	arq_w.write(str(list_columns[-1]) + "\n")
 
 #metodo nativo JOIN nao junta int com string :( 
 def join(sep, lista):
@@ -64,13 +71,14 @@ def join(sep, lista):
 	
 	return string[:-1]
 		
+import os
 
 #init
-path = "/home/tales/development/RecSys-cariris/Data/"
+path =  "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[0:-2]) + "/Data/"
 print "Loading CLICKS data"
-linhas = read_file_parts(path, "clicks_parte_X_proc_basico.dat", "X", [1,2,3,4])
+linhas = read_file_parts(path, "/test-proc-basico/test-proc-basico-parteX.dat", "X", [1,2,3,4,5,6])
 print len(linhas), "lines loaded"
-arq_w = open(path + "clicks_proc_2.dat", "w")
+arq_w = open(path + "columns/test-column-same-cat.dat", "w")
 
 
 ###########################################################
@@ -79,7 +87,7 @@ arq_w = open(path + "clicks_proc_2.dat", "w")
 ## estão juntas no arquivo. TalesBoy :)                  ##
 ###########################################################
 
-session_id_anterior = "0"
+session_id_anterior = linhas[0].split(",")[0]
 lista_linhas_por_id = []
 
 #apenas para poder registrar as linhas da ultima sessão
@@ -87,8 +95,9 @@ linhas.append("0,0,0,0,0.0,0,0")
 
 conta_linhas = 0
 percent_done = 0
-
+total = 0
 for linha in linhas:
+	total = total + 1
 	conta_linhas = conta_linhas + 1
 	
 	linhaSplit = linha.replace("\n","").split(",")
@@ -113,7 +122,7 @@ for linha in linhas:
 		#print datetime.datetime.now().time().hour, datetime.datetime.now().minute
 		print "Done:", (str(percent_done) + "%")
 
-	elif (330039 == conta_linhas):
+	elif ((len(linhas) / 100) == conta_linhas):
 		percent_done = percent_done + 1
 		conta_linhas = 0
 		#print datetime.datetime.now().time().hour, datetime.datetime.now().minute
@@ -123,3 +132,7 @@ for linha in linhas:
 ##########################################
 ## FIM DO TRECHO DESCRITO ANTERIORMENTE ##
 ##########################################
+
+print total - 1, "lines saved"
+
+arq_w.close()
