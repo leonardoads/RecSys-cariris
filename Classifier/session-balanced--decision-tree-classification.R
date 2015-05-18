@@ -204,7 +204,7 @@ if(balance == "session"){
 	nrow(data.buys)
 
 	data.train = rbind(data.buys, data.no.buys.subset)
-
+}
 else if(balance == "click"){
 	data.no.buys.subset = sample(data.no.buys)[0: ( no.buys.proportion * (length(data.buys)) ) ]
 	data.no.buys = NULL
