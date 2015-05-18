@@ -26,17 +26,20 @@ path = args[4]
 
 #TRAIN PARTITION
 #IF YOU SET IT TO 100, THE TEST PARTITION WILL BE THE SAME AS TRAIN PARTITION
-no.buys.proportion = as.integer(args[5])
+no.buys.proportion = as.numeric(args[5])
+
+#SET THE BALANCE STYLE (SESSION OR CLICK) BASED
+balance = args[6]
 
 #TEST SIMULATION OR REAL TEST
 #TRUE IF YOU WANT TO GENERATE THE REAL TEST PREDICTION
-simulation = args[6]
+simulation = args[7]
 
 #SAVE summary(model)
-save_sm = args[7]
+save_sm = args[8]
 
 #EXAMPLE OF A TERMINAL COMMAND LINE CALLING
-#Rscript session-balanced--decision-tree-classification.R 5 1111 ss-da-mo-ti-bo-sd-sc /home/tales/dev/RecSys-cariris/ 1 TRUE
+#Rscript session-balanced--decision-tree-classification.R 5 1111 ss-da-mo-ti-it-wk-cl-bo-sd-sc-mn-df-md /home/tales/dev/RecSys-cariris/ session 1 TRUE FALSE
 ############################################
 
 library("gmodels")
@@ -182,27 +185,37 @@ data.buys = data[data$IS_BUY == 1,]
 buy.sessions = data.buys$SESSION
 buy.sessions = unique(buy.sessions)
 
-#identificar as sessoes que nao compraram
 data.no.buys = data[data$IS_BUY == 0,]
-no.buy.sessions = data.no.buys[!is.element(data.no.buys$SESSION, buy.sessions),]$SESSION
-no.buy.sessions = unique(no.buy.sessions)
+
+if(balance == "session"){
+	#identificar as sessoes que nao compraram
+	no.buy.sessions = data.no.buys[!is.element(data.no.buys$SESSION, buy.sessions),]$SESSION
+	no.buy.sessions = unique(no.buy.sessions)
+
+	#GENERATE data.train WITH SAME NUMBERS OF (SESSION WITH ANY BUY) AND (SESSIONS WITH NO BUY) 
+	data.no.buys = data[is.element(data$SESSION, no.buy.sessions),]
+	no.buy.subset.sessions = sample(no.buy.sessions)[0: ( no.buys.proportion * (length(buy.sessions)) ) ]
+	data.no.buys.subset = data.no.buys[is.element(data.no.buys$SESSION, no.buy.subset.sessions),]
+	data.no.buys = NULL
+	gc()
+	nrow(data.no.buys.subset)
+
+	data.buys = data[is.element(data$SESSION, buy.sessions),]
+	nrow(data.buys)
+
+	data.train = rbind(data.buys, data.no.buys.subset)
+
+else if(balance == "click"){
+	data.no.buys.subset = sample(data.no.buys)[0: ( no.buys.proportion * (length(data.buys)) ) ]
+	data.no.buys = NULL
+	gc()
+	data.train = rbind(data.buys, data.no.buys.subset)
+}
 
 #liberando memoria
 data.buys = NULL
-data.no.buys = NULL
 gc()
 
-
-#GENERATE data.train WITH SAME NUMBERS OF (SESSION WITH ANY BUY) AND (SESSIONS WITH NO BUY) 
-data.no.buys = data[is.element(data$SESSION, no.buy.sessions),]
-no.buy.subset.sessions = sample(no.buy.sessions)[0: ( no.buys.proportion * (length(buy.sessions)) ) ]
-data.no.buys.subset = data.no.buys[is.element(data.no.buys$SESSION, no.buy.subset.sessions),]
-nrow(data.no.buys.subset)
-
-data.buys = data[is.element(data$SESSION, buy.sessions),]
-nrow(data.buys)
-
-data.train = rbind(data.buys, data.no.buys.subset)
 sapply(data.train, class)
 
 #Checar se a o subset de no.buy.sessions preservou o aspecto geral de data.no.buys
@@ -248,18 +261,13 @@ model
 
 prediction.data.train <- predict(model, data.train)
 
-CrossTable(data.train$IS_BUY, prediction.data.test, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))
+CrossTable(data.train$IS_BUY, prediction.data.train, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))
 
-output_filename = paste("session-based-", "report", "-train-", as.character(train_partition_percent), "-", as.character(100 - train_partition_percent), "-", "forest", n_trees, "-", "costs", costs, "-", columns, sep = "")
+output_filename = paste(balance, "-based-", "report", "-train-", as.character(no.buys.proportion), "-", "forest", n_trees, "-", "costs", costs, "-", columns, sep = "")
 complete_path = paste(path, "/Classifier/reports/", output_filename, ".dat", sep = "")
 print(paste("Report saved as ", complete_path))
 print("\n")
-write(capture.output(CrossTable(data.train$IS_BUY, prediction.data.test, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))), complete_path)
-
-if(save_sm == "TRUE"){
-  summary_path = paste(path, "/Classifier/summary_model/", "model-summary-", "report", "-train-", as.character(train_partition_percent), "-", as.character(100 - train_partition_percent), "-", "forest", n_trees, "-", "costs", costs, "-", columns, ".dat", sep = "")
-  write(capture.output(summary(model)), summary_path)
-}
+write(capture.output(CrossTable(data.train$IS_BUY, prediction.data.train, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))), complete_path)
 
 data.train = NULL
 prediction.data.test = NULL
@@ -269,14 +277,16 @@ if(simulation == "TRUE"){
 	print("Trained model will be used to predict real test")
 	print("\n")
 	print("Loading test data")
-	test = fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte1.dat", sep = ""), sep = "\n", header = F)
-	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte2.dat", sep = ""), sep = "\n", header = F))
-	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte3.dat", sep = ""), sep = "\n", header = F))
-	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte4.dat", sep = ""), sep = "\n", header = F))
-	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte5.dat", sep = ""), sep = "\n", header = F))
-	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte6.dat", sep = ""), sep = "\n", header = F))
+	test = fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte1.dat", sep = ""), sep = ",", header = F)
+	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte2.dat", sep = ""), sep = ",", header = F))
+	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte3.dat", sep = ""), sep = ",", header = F))
+	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte4.dat", sep = ""), sep = ",", header = F))
+	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte5.dat", sep = ""), sep = ",", header = F))
+	test = rbind(test, fread(paste(path, "/Data/test-proc-basico/test-proc-basico-parte6.dat", sep = ""), sep = ",", header = F))
 	print("Test data loaded")
 	print("\n")
+
+	head(test)
 
 	column_names = c()
 	i = 1
@@ -411,7 +421,7 @@ if(simulation == "TRUE"){
 
 	test = test[test$PRED == 1,]
 
-	output_filename = paste("session-based-", "forest", n_trees, "-", "costs", costs, "-", columns, sep = "")
+	output_filename = paste(balance, "-based-", as.character(no.buys.proportion), "-forest", n_trees, "-", "costs", costs, "-", columns, sep = "")
 	complete_path = paste(path, "/Classifier/predicts/", output_filename, ".dat", sep = "")
 
 	print (paste("Saving predictions as ", complete_path))
@@ -420,6 +430,12 @@ if(simulation == "TRUE"){
 
 	test = NULL
 	prediction = NULL
+}
+
+#WARNING: THIS COULD TAKE *TWICE* MORE TIME THAN THE REST OF THE SCRIP, SERIOUSLY
+if(save_sm == "TRUE"){
+  summary_path = paste(path, "/Classifier/summary_model/", "model-summary-", "report-", balance, "based-", "-train-", as.character(no.buys.proportion), "-", "forest", n_trees, "-", "costs", costs, "-", columns, ".dat", sep = "")
+  write(capture.output(summary(model)), summary_path)
 }
 
 model = NULL
