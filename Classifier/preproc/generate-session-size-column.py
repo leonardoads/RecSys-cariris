@@ -37,8 +37,8 @@ def read_file_parts(path, pattern_filename, match_numeric, list_index):
 
 #já salva as linhas com a nova coluna
 def sum_and_save_session_size(session, lista_linhas, arq_w):
-
-	arq_w.write( str(len(lista_linhas)) + "\n")
+	for i in range(len(lista_linhas)):
+		arq_w.write( str(len(lista_linhas)) + "\n")
 
 #metodo nativo JOIN nao junta int com string :( 
 def join(sep, lista):
