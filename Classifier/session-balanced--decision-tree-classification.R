@@ -1,4 +1,4 @@
-###### get arguments from command line #####
+	###### get arguments from command line #####
 options(echo=TRUE) # if you want see commands in output file
 args <- commandArgs(trailingOnly = TRUE)
 
@@ -182,14 +182,13 @@ print(column_names[!is.na(column_names)])
 colnames(data) = column_names[!is.na(column_names)]
 
 data.buys = data[data$IS_BUY == 1,]
-buy.sessions = data.buys$SESSION
-buy.sessions = unique(buy.sessions)
-
 data.no.buys = data[data$IS_BUY == 0,]
 
 print (balance)
 if(balance == "session"){
 	#identificar as sessoes que nao compraram
+	buy.sessions = data.buys$SESSION
+	buy.sessions = unique(buy.sessions)
 	no.buy.sessions = data.no.buys[!is.element(data.no.buys$SESSION, buy.sessions),]$SESSION
 	no.buy.sessions = unique(no.buy.sessions)
 
@@ -207,7 +206,8 @@ if(balance == "session"){
 	data.train = rbind(data.buys, data.no.buys.subset)
 
 }else if(balance == "click"){
-	data.no.buys.subset = sample(data.no.buys)[0: ( no.buys.proportion * (nrow(data.buys)) ) ]
+	data.no.buys.subset = data.no.buys[order(runif(no.buys.proportion * (nrow(data.buys)))), ]
+	nrow(data.buys)
 	data.no.buys = NULL
 	gc()
 	data.train = rbind(data.buys, data.no.buys.subset)
