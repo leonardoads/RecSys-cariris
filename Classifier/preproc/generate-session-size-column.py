@@ -26,7 +26,7 @@ path = args[4]
 
 #TRAIN PARTITION
 #IF YOU SET IT TO 100, THE TEST PARTITION WILL BE THE SAME AS TRAIN PARTITION
-no.buys.proportion = as.integer(args[5])
+no.buys.proportion = as.numeric(args[5])
 
 #TEST SIMULATION OR REAL TEST
 #TRUE IF YOU WANT TO GENERATE THE REAL TEST PREDICTION
@@ -257,11 +257,6 @@ print(paste("Report saved as ", complete_path))
 print("\n")
 write(capture.output(CrossTable(data.train$IS_BUY, prediction.data.train, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))), complete_path)
 
-if(save_sm == "TRUE"){
-  summary_path = paste(path, "/Classifier/summary_model/", "model-summary-", "report", "-train-", as.character(no.buys.proportion), "-", "forest", n_trees, "-", "costs", costs, "-", columns, ".dat", sep = "")
-  write(capture.output(summary(model)), summary_path)
-}
-
 data.train = NULL
 prediction.data.test = NULL
 gc()
@@ -423,6 +418,11 @@ if(simulation == "TRUE"){
 
 	test = NULL
 	prediction = NULL
+}
+
+if(save_sm == "TRUE"){
+  summary_path = paste(path, "/Classifier/summary_model/", "model-summary-", "report", "-train-", as.character(no.buys.proportion), "-", "forest", n_trees, "-", "costs", costs, "-", columns, ".dat", sep = "")
+  write(capture.output(summary(model)), summary_path)
 }
 
 model = NULL
