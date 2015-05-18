@@ -162,6 +162,12 @@ if(is.element("md", columns_array)){
   data = data.frame(data, SOLD_MEAN_DIFF = fread(paste(path, "Data/columns/clicks-soldability_median_by_session.dat", sep = ""), sep = "\n", header = F))
 }
 
+if(is.element("sz", columns_array)){
+  column_names[i] <- "SESSION_SIZE"
+  i = i + 1
+  data = data.frame(data, SESSION_SIZE = fread(paste(path, "Data/columns/clicks-column-session-size.dat", sep = ""), sep = "\n", header = F))
+}
+
 column_names[i] <- "IS_BUY"
 data = data.frame(data, IS_BUY = fread(paste(path, "Data/columns/clicks-column-buy.dat", sep = ""), sep = "\n", header = F))
 ###################################################
@@ -235,12 +241,11 @@ model <- C5.0(data.train[is_buy_index], as.factor(data.train$IS_BUY), trials = n
 model
 #summary(model)
 
-#head(data.test)
 #head(data.train)
 
-prediction.data.test <- predict(model, data.test)
+prediction.data.train <- predict(model, data.train)
 
-CrossTable(data.test$IS_BUY, prediction.data.test, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))
+CrossTable(data.train$IS_BUY, prediction.data.test, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))
 
 output_filename = paste("session-based-", "report", "-train-", as.character(train_partition_percent), "-", as.character(100 - train_partition_percent), "-", "forest", n_trees, "-", "costs", costs, "-", columns, sep = "")
 complete_path = paste(path, "/Classifier/reports/", output_filename, ".dat", sep = "")
@@ -249,7 +254,6 @@ print("\n")
 write(capture.output(CrossTable(data.train$IS_BUY, prediction.data.test, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))), complete_path)
 
 data.train = NULL
-data.test = NULL
 prediction.data.test = NULL
 gc()
 
@@ -365,6 +369,12 @@ if(simulation == "TRUE"){
 	  column_names[i] <- "SOLD_MEDIAN"
 	  i = i + 1
 	  test = data.frame(test, SOLD_MEDIAN = fread(paste(path, "Data/columns/test-soldability_median_by_session.dat", sep = ""), sep = "\n", header = F))
+	}
+
+	if(is.element("sz", columns_array)){
+	  column_names[i] <- "SESSION_SIZE"
+	  i = i + 1
+	  test = data.frame(test, SESSION_SIZE = fread(paste(path, "Data/columns/test-column-session-size.dat", sep = ""), sep = "\n", header = F))
 	}
 	###################################################
 	print("Aditional columns loaded")
