@@ -28,15 +28,18 @@ path = args[4]
 #IF YOU SET IT TO 100, THE TEST PARTITION WILL BE THE SAME AS TRAIN PARTITION
 no.buys.proportion = as.numeric(args[5])
 
+#SET THE BALANCE STYLE (SESSION OR CLICK) BASED
+balance = args[6]
+
 #TEST SIMULATION OR REAL TEST
 #TRUE IF YOU WANT TO GENERATE THE REAL TEST PREDICTION
-simulation = args[6]
+simulation = args[7]
 
 #SAVE summary(model)
-save_sm = args[7]
+save_sm = args[8]
 
 #EXAMPLE OF A TERMINAL COMMAND LINE CALLING
-#Rscript session-balanced--decision-tree-classification.R 5 1111 ss-da-mo-ti-it-wk-cl-bo-sd-sc-mn-df-md /home/tales/dev/RecSys-cariris/ 1 TRUE
+#Rscript session-balanced--decision-tree-classification.R 5 1111 ss-da-mo-ti-it-wk-cl-bo-sd-sc-mn-df-md /home/tales/dev/RecSys-cariris/ session 1 TRUE FALSE
 ############################################
 
 library("gmodels")
@@ -182,28 +185,37 @@ data.buys = data[data$IS_BUY == 1,]
 buy.sessions = data.buys$SESSION
 buy.sessions = unique(buy.sessions)
 
-#identificar as sessoes que nao compraram
 data.no.buys = data[data$IS_BUY == 0,]
-no.buy.sessions = data.no.buys[!is.element(data.no.buys$SESSION, buy.sessions),]$SESSION
-no.buy.sessions = unique(no.buy.sessions)
+
+if(balance == "session"){
+	#identificar as sessoes que nao compraram
+	no.buy.sessions = data.no.buys[!is.element(data.no.buys$SESSION, buy.sessions),]$SESSION
+	no.buy.sessions = unique(no.buy.sessions)
+
+	#GENERATE data.train WITH SAME NUMBERS OF (SESSION WITH ANY BUY) AND (SESSIONS WITH NO BUY) 
+	data.no.buys = data[is.element(data$SESSION, no.buy.sessions),]
+	no.buy.subset.sessions = sample(no.buy.sessions)[0: ( no.buys.proportion * (length(buy.sessions)) ) ]
+	data.no.buys.subset = data.no.buys[is.element(data.no.buys$SESSION, no.buy.subset.sessions),]
+	data.no.buys = NULL
+	gc()
+	nrow(data.no.buys.subset)
+
+	data.buys = data[is.element(data$SESSION, buy.sessions),]
+	nrow(data.buys)
+
+	data.train = rbind(data.buys, data.no.buys.subset)
+
+else if(balance == "click"){
+	data.no.buys.subset = sample(data.no.buys)[0: ( no.buys.proportion * (length(data.buys)) ) ]
+	data.no.buys = NULL
+	gc()
+	data.train = rbind(data.buys, data.no.buys.subset)
+}
 
 #liberando memoria
 data.buys = NULL
-data.no.buys = NULL
 gc()
 
-
-#GENERATE data.train WITH SAME NUMBERS OF (SESSION WITH ANY BUY) AND (SESSIONS WITH NO BUY) 
-data.no.buys = data[is.element(data$SESSION, no.buy.sessions),]
-no.buy.subset.sessions = sample(no.buy.sessions)[0: ( no.buys.proportion * (length(buy.sessions)) ) ]
-data.no.buys.subset = data.no.buys[is.element(data.no.buys$SESSION, no.buy.subset.sessions),]
-nrow(data.no.buys.subset)
-
-data.buys = data[is.element(data$SESSION, buy.sessions),]
-nrow(data.buys)
-
-### ### ### ###
-data.train = rbind(data.buys, data.no.buys.subset)
 sapply(data.train, class)
 
 #Checar se a o subset de no.buy.sessions preservou o aspecto geral de data.no.buys
@@ -420,6 +432,7 @@ if(simulation == "TRUE"){
 	prediction = NULL
 }
 
+#WARNING: THIS COULD TAKE *TWICE* MORE TIME THAN THE REST OF THE SCRIP, SERIOUSLY
 if(save_sm == "TRUE"){
   summary_path = paste(path, "/Classifier/summary_model/", "model-summary-", "report", "-train-", as.character(no.buys.proportion), "-", "forest", n_trees, "-", "costs", costs, "-", columns, ".dat", sep = "")
   write(capture.output(summary(model)), summary_path)
