@@ -24,12 +24,12 @@ columns_array = substring(columns, seq(1,nchar(columns),3), seq(2,nchar(columns)
 #PATH TO THE PROJECT, YOU MUST INCLUDE PROJECT'S ROOT DIRECTORY
 path = args[4]
 
+#SET THE BALANCE STYLE (SESSION OR CLICK) BASED
+balance = args[5]
+
 #TRAIN PARTITION
 #IF YOU SET IT TO 100, THE TEST PARTITION WILL BE THE SAME AS TRAIN PARTITION
-no.buys.proportion = as.numeric(args[5])
-
-#SET THE BALANCE STYLE (SESSION OR CLICK) BASED
-balance = args[6]
+no.buys.proportion = as.numeric(args[6])
 
 #TEST SIMULATION OR REAL TEST
 #TRUE IF YOU WANT TO GENERATE THE REAL TEST PREDICTION
@@ -187,6 +187,7 @@ buy.sessions = unique(buy.sessions)
 
 data.no.buys = data[data$IS_BUY == 0,]
 
+print (balance)
 if(balance == "session"){
 	#identificar as sessoes que nao compraram
 	no.buy.sessions = data.no.buys[!is.element(data.no.buys$SESSION, buy.sessions),]$SESSION
@@ -204,8 +205,8 @@ if(balance == "session"){
 	nrow(data.buys)
 
 	data.train = rbind(data.buys, data.no.buys.subset)
-}
-else if(balance == "click"){
+
+}else if(balance == "click"){
 	data.no.buys.subset = sample(data.no.buys)[0: ( no.buys.proportion * (length(data.buys)) ) ]
 	data.no.buys = NULL
 	gc()
