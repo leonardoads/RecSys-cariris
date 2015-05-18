@@ -32,6 +32,9 @@ no.buys.proportion = as.integer(args[5])
 #TRUE IF YOU WANT TO GENERATE THE REAL TEST PREDICTION
 simulation = args[6]
 
+#SAVE summary(model)
+save_sm = args[7]
+
 #EXAMPLE OF A TERMINAL COMMAND LINE CALLING
 #Rscript session-balanced--decision-tree-classification.R 5 1111 ss-da-mo-ti-bo-sd-sc /home/tales/dev/RecSys-cariris/ 1 TRUE
 ############################################
@@ -252,6 +255,11 @@ complete_path = paste(path, "/Classifier/reports/", output_filename, ".dat", sep
 print(paste("Report saved as ", complete_path))
 print("\n")
 write(capture.output(CrossTable(data.train$IS_BUY, prediction.data.test, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))), complete_path)
+
+if(save_sm == "TRUE"){
+  summary_path = paste(path, "/Classifier/summary_model/", "model-summary-", "report", "-train-", as.character(train_partition_percent), "-", as.character(100 - train_partition_percent), "-", "forest", n_trees, "-", "costs", costs, "-", columns, ".dat", sep = "")
+  write(capture.output(summary(model)), summary_path)
+}
 
 data.train = NULL
 prediction.data.test = NULL
