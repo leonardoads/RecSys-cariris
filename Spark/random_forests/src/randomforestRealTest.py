@@ -58,7 +58,7 @@ log.info("======================================================================
 print("============================================================================CARREGANDO DADOS DE TREINO")
 start_time = time.time()
 
-data = sc.textFile( '/local/data/recsysTales/all_samples/all_clicks_sample_v.dat')
+data = sc.textFile( '/local/data/recsys/data/trains_tests/sample_50nb.dat')
 trainingData = data.map(outro)
 log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 
@@ -67,12 +67,12 @@ log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 log.info("============================================================================TREINANDO")
 
 start_time = time.time()
-model = RandomForest.trainClassifier(trainingData, numClasses=2, categoricalFeaturesInfo={3:7},numTrees=10)
+model = RandomForest.trainClassifier(trainingData, numClasses=2, categoricalFeaturesInfo={3:7},numTrees=50)
 log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 
 log.info("============================================================================CARREGANDO DADOS DE TESTE")
 start_time = time.time()
-data2 = sc.textFile( '/local/data/real_test_v.dat')
+data2 = sc.textFile( '/local/data/recsys/data/real_test_v.dat')
 testData = data2.map(toVector)
 log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 
@@ -87,7 +87,7 @@ start_time = time.time()
 # Evaluate model on test instances and compute test error
 predictions = model.predict(testData)
 
-predictions.saveAsTextFile("/local/data/recsys/predicitions_real_10.dat")
+predictions.saveAsTextFile("/local/data/recsys/predictions/predicitions_real_50_50")
 #labelsAndPredictions = testData.map(lambda lp: lp.label).zip(predictions)
 #labelsAndPredictions.saveAsTextFile("/local/data/recsys/labelsAndpredictions.dat")
 #testErr = labelsAndPredictions.filter(lambda (v, p): v != p).count() / float(testData.count())

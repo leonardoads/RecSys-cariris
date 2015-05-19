@@ -4,7 +4,7 @@ import os
 print "Loading data"
 #path = '/local/data/recsysTales/all_samples/trains_tests/test_70nb_90_s.dat'
 #path = '/local/data/recsys/outputs/compras_10.dat'
-path = '/local/data/recsys/predictions/outputs/comprasTeste.dat'
+path = sys.argv[1]
 arq_r = open(path, "r")
 linhas = arq_r.readlines()
 arq_r.close()
@@ -17,7 +17,7 @@ arq_w = open(path.replace(".dat","-formated.dat"), "w")
 linhas.append("0,0,0")
 for i in range(len(linhas) - 1):
     if(count % 1000 == 1):
-        print milhas
+        #print milhas
         milhas = milhas + 1
     count = count + 1
     linha = linhas[i].replace("\n", "").split(",")
