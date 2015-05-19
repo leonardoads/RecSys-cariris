@@ -1,0 +1,10 @@
+library(data.table)
+a = fread("/local/data/real_test_i.dat")
+b1 = fread("/local/data/recsys/predicitions_real_10.dat/tudo.dat")
+c = cbind(a,b1)
+colnames(c) <- c("a","b","c")
+head(c)
+d1 = c[c == 1,]
+write.table(d1,"/local/data/recsys/outputs/compras_10.dat",row.names = FALSE,col.names = FALSE,quote = FALSE,sep = ",")
+head(a)
+head(b)

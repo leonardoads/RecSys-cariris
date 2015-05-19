@@ -15,6 +15,9 @@ vignettes/*.pdf
 *.tar.gz
 *.py~
 *.R~
+*.*~
+
+*.idea
 
 #dados muito grandes
 *.dat
