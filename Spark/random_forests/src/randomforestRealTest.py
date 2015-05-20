@@ -87,7 +87,7 @@ log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 log.info("============================================================================TREINANDO FOREST")
 
 start_time = time.time()
-model = RandomForest.trainClassifier(trainingData, numClasses=2, numTrees=50) #categoricalFeaturesInfo={3:7},
+model = RandomForest.trainClassifier(trainingData, numClasses=2,categoricalFeaturesInfo={}, numTrees=50) #categoricalFeaturesInfo={3:7},
 log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 save_output(model,testData,"/local/data/recsys/predictions/predicitions_real_forest_50_50")
 
@@ -102,4 +102,4 @@ start_time = time.time()
 log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 model = SVMWithSGD.train(trainingData)
 log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
-save_output(model,testData,"/local/data/recsys/predictions/predicitions_real_svm_50_50")
+save_output(model,testData,"/local/data/recsys/predictions/predicitions_real_SVM_50_50")
