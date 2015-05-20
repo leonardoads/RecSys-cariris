@@ -5,6 +5,9 @@ from pyspark.mllib.linalg import Vectors
 import logging
 import time, os, sys
 import re
+from pyspark.mllib.classification import NaiveBayes, SVMWithSGD
+
+
 def setup_logger(logger_name, log_file, level=logging.INFO):
     l = logging.getLogger(logger_name)
     formatter = logging.Formatter('%(message)s')
@@ -44,6 +47,15 @@ def toVector(line):
     return Vectors.dense(parts)
 
 
+
+
+def save_output(model,testData,output):
+    log.info("============================================================================CALCULANDO METRICA DE ERRO")
+    start_time = time.time()
+    predictions = model.predict(testData)
+    predictions.saveAsTextFile(output)
+    log.info("--- %s minutes ---" % ((time.time() - start_time) / 60))
+
 setup_logger('log', '/local/data/recsys/log.log')
 log = logging.getLogger('log')
 
@@ -51,6 +63,7 @@ conf = (SparkConf()
          .setMaster("local")
          .setAppName("My app"))
 sc = SparkContext(conf = conf)
+
 
 
 log.info("============================================================================50 ARVORES, 50% / 50% por clicks _ train e test")
@@ -63,12 +76,6 @@ trainingData = data.map(outro)
 log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 
 
-# Train a RandomForest model.
-log.info("============================================================================TREINANDO")
-
-start_time = time.time()
-model = RandomForest.trainClassifier(trainingData, numClasses=2, categoricalFeaturesInfo={3:7},numTrees=50)
-log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 
 log.info("============================================================================CARREGANDO DADOS DE TESTE")
 start_time = time.time()
@@ -77,24 +84,22 @@ testData = data2.map(toVector)
 log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
 
 
-log.info("============================================================================CALCULANDO METRICA DE ERRO")
-# print("============================================================================CARREGANDO DADOS DE TESTCALCULANDO METRICA DE ERRO")
+log.info("============================================================================TREINANDO FOREST")
+
 start_time = time.time()
-
-#print trainingData.take(2)
-#print testData.take(2)
-
-# Evaluate model on test instances and compute test error
-predictions = model.predict(testData)
-
-predictions.saveAsTextFile("/local/data/recsys/predictions/predicitions_real_50_50")
-#labelsAndPredictions = testData.map(lambda lp: lp.label).zip(predictions)
-#labelsAndPredictions.saveAsTextFile("/local/data/recsys/labelsAndpredictions.dat")
-#testErr = labelsAndPredictions.filter(lambda (v, p): v != p).count() / float(testData.count())
-#log.info('Test Error = ' + str(testErr))
+model = RandomForest.trainClassifier(trainingData, numClasses=2, numTrees=50) #categoricalFeaturesInfo={3:7},
 log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
+save_output(model,testData,"/local/data/recsys/predictions/predicitions_real_forest_50_50")
 
-#print('Learned classification forest model:')
-#print(model.toDebugString())
+log.info("============================================================================NAIVE")
+start_time = time.time()
+modelNaive = NaiveBayes.train(trainingData)
+log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
+save_output(model,testData,"/local/data/recsys/predictions/predicitions_real_naive_50_50")
 
-             
+log.info("============================================================================SVM")
+start_time = time.time()
+log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
+model = SVMWithSGD.train(trainingData)
+log.info("--- %s minutes ---" % ((time.time() - start_time)/60))
+save_output(model,testData,"/local/data/recsys/predictions/predicitions_real_svm_50_50")
